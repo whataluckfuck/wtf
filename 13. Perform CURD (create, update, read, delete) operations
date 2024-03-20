@@ -1,0 +1,130 @@
+Activity_main.xml:
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="16dp">
+<EditText
+android:id="@+id/editTextPhoneNumber"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_marginBottom="8dp"
+android:hint="Phone Number"
+tools:ignore="TouchTargetSizeCheck" />
+<EditText
+android:id="@+id/editTextMessage"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_below="@id/editTextPhoneNumber"
+android:layout_marginBottom="8dp"
+android:hint="Message"
+tools:ignore="TouchTargetSizeCheck" />
+<Button
+android:id="@+id/buttonSend"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_below="@id/editTextMessage"
+android:layout_alignParentEnd="true"
+android:text="Send" />
+<TextView
+android:id="@+id/textViewReceivedMessage"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_below="@id/buttonSend"
+android:layout_marginTop="16dp"
+android:text="Received Message:"
+android:textStyle="bold" />
+</RelativeLayout>
+MainActivity.java:
+package com.example.myapplication1;
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+public class MainActivity extends AppCompatActivity {
+SQLiteDatabase db;
+Button btnsave,btnDelete,btnModify,btnView,btnViewAll;
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+btnsave=(Button)findViewById(R.id.btnsave);
+btnDelete=(Button) findViewById(R.id.btnDelete) ;
+btnModify=(Button) findViewById(R.id.btnModify) ;
+btnView=(Button) findViewById(R.id.btnView) ;
+EditText edttxtrollno = (EditText) findViewById(R.id.edttxtrollno);
+EditText edttxtname = (EditText) findViewById(R.id.edttxtname);
+EditText edttxtage = (EditText) findViewById(R.id.edttxtage);
+db=openOrCreateDatabase("StudentDB", Context.MODE_PRIVATE,null);
+btnsave.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+//Toast.makeText(getApplicationContext(),"Database Created",Toast.LENGTH_LONG).show();
+db.execSQL("CREATE TABLE IF NOT EXISTS Studentnew(Rollno VARCHAR, Name VARCHAR,Age
+VARCHAR);");
+//db.execSQL("INSERT INTO Student1 VALUES( '"+edttxtname.getText()+"','"+
+edttxtage.getText()+"');"); db.execSQL("INSERT INTO Studentnew VALUES( '" + edttxtrollno.getText()+"',
+'"+edttxtname.getText()+"','"+ edttxtage.getText()+"');");
+showToast("Record Inserted");
+edttxtrollno.setText("");
+edttxtname.setText("");
+edttxtage.setText("");
+}});
+btnDelete.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+db.execSQL("Delete from Studentnew where Rollno='"+ edttxtrollno.getText()+"'");
+showToast("Record Deleted");
+edttxtrollno.setText("");
+edttxtname.setText("");
+edttxtage.setText("");
+}
+});
+btnView.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+if(edttxtrollno.getText().toString().trim().length()==0){
+showToast("Please enter Rollno"); }
+Cursor c=db.rawQuery("SELECT * FROM Studentnew WHERE Rollno='"+edttxtrollno.getText()+"'",
+null);
+if(c.moveToFirst())
+{ if(c.getCount()==0)
+{
+
+showToast("No Record Found");
+} else{
+edttxtname.setText(c.getString(1));
+edttxtage.setText(c.getString(2));
+} } else {
+showToast("No Record Found ");
+} }
+
+});
+btnModify.setOnClickListener(new View.OnClickListener() {
+@Override
+public void onClick(View view) {
+if(edttxtrollno.getText().toString().trim().length()==0)
+{
+showToast("Please enter Rollno");
+}
+Cursor c=db.rawQuery("SELECT * FROM Studentnew WHERE Rollno='"+edttxtrollno.getText()+"'",
+null);
+if(c.moveToFirst(){
+db.execSQL("UPDATE Studentnew SET
+Name='"+edttxtname.getText()+"',Age='"+edttxtage.getText()+
+"' WHERE Rollno='"+edttxtrollno.getText()+"'");
+showToast("Record Updated");
+edttxtrollno.setText("");
+edttxtname.setText("");
+edttxtage.setText("");
+}}
+});}
+private void showToast(String message) {
+Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+}}
