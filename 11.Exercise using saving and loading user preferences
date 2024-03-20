@@ -1,0 +1,118 @@
+Activity_main.xml:
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:padding="16dp"
+tools:context=".MainActivity">
+<TextView
+android:id="@+id/tv_language"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Preferred Language:"
+android:textSize="18sp"
+android:layout_marginTop="16dp" />
+<Spinner
+android:id="@+id/spinner_language"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_below="@id/tv_language"
+android:layout_marginTop="8dp" />
+<TextView
+android:id="@+id/tv_font_size"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Preferred Font Size:"
+android:textSize="18sp"
+android:layout_below="@id/spinner_language"
+android:layout_marginTop="16dp" />
+<SeekBar
+android:id="@+id/seekBar_font_size"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_below="@id/tv_font_size"
+android:layout_marginTop="8dp"
+android:max="30"
+android:progress="18" />
+<Button
+android:id="@+id/btn_save"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:text="Save Preferences"
+android:layout_below="@id/seekBar_font_size"
+android:layout_centerHorizontal="true"
+android:layout_marginTop="24dp" />
+</RelativeLayout>
+
+arrays.xml:
+<resources>
+<string-array name="languages_array">
+<item>English</item>
+<item>Spanish</item>
+<item>French</item>
+<item>German</item>
+<item>Chinese</item>
+</string-array>
+</resources>
+MainActivity.java:
+package com.example.activity.program10;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+public class MainActivity extends AppCompatActivity {
+private Spinner spinnerLanguage;
+private SeekBar seekBarFontSize;
+private Button btnSave;
+private SharedPreferences preferences;
+private static final String PREF_NAME = "user_preferences";
+private static final String KEY_LANGUAGE = "preferred_language";
+private static final String KEY_FONT_SIZE = "preferred_font_size";
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+spinnerLanguage = findViewById(R.id.spinner_language);
+seekBarFontSize = findViewById(R.id.seekBar_font_size);
+btnSave = findViewById(R.id.btn_save);
+// Set up spinner with language options
+ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+R.array.languages_array, android.R.layout.simple_spinner_item);
+adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+spinnerLanguage.setAdapter(adapter);
+preferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+// Load preferences
+loadPreferences();
+btnSave.setOnClickListener(v -> savePreferences());
+}
+private void loadPreferences() {
+String language = preferences.getString(KEY_LANGUAGE, "");
+int fontSize = preferences.getInt(KEY_FONT_SIZE, 18);
+
+// Set saved preferences
+spinnerLanguage.setSelection(getIndex(spinnerLanguage, language));
+seekBarFontSize.setProgress(fontSize);
+}
+private void savePreferences() {
+String selectedLanguage = spinnerLanguage.getSelectedItem().toString();
+int selectedFontSize = seekBarFontSize.getProgress();
+// Save preferences
+SharedPreferences.Editor editor = preferences.edit();
+editor.putString(KEY_LANGUAGE, selectedLanguage);
+editor.putInt(KEY_FONT_SIZE, selectedFontSize);
+editor.apply();
+Toast.makeText(this, "Preferences saved successfully", Toast.LENGTH_SHORT).show();
+}
+private int getIndex(Spinner spinner, String value) {
+for (int i = 0; i < spinner.getCount(); i++) {
+if (spinner.getItemAtPosition(i).toString().equalsIgnoreCase(value)) {
+return i;
+}
+}
+return 0;
+}
+}
