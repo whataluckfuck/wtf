@@ -1,0 +1,99 @@
+
+Whataluck am <whataluckam@gmail.com>
+Attachments
+6:34 AM (36 minutes ago)
+to me
+
+Activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".MainActivity">
+<androidx.appcompat.widget.Toolbar
+android:id="@+id/toolbar"
+android:layout_width="match_parent"
+android:layout_height="?attr/actionBarSize"
+android:background="?attr/colorPrimary"/>
+<androidx.constraintlayout.widget.ConstraintLayout
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<TextView
+android:id="@+id/textView2"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginBottom="348dp"
+android:foregroundTint="#E33C3C"
+android:text="ACTION BAR AND MENU ITEMS"
+android:textColor="#14ACF1"
+android:textSize="24sp"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.492"
+app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
+main_menu.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto">
+<item
+android:id="@+id/action_devicecare"
+android:title="Device care"
+app:showAsAction="never"/>
+<item
+android:id="@+id/action_themes"
+android:title="Themes"
+app:showAsAction="never"/>
+<item
+android:id="@+id/action_settings"
+android:title="Settings"
+app:showAsAction="never"/>
+</menu>
+
+MainActivity.java:
+package com.example.activity.ex10;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+public class MainActivity extends AppCompatActivity {
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+super.onCreate(savedInstanceState);
+setContentView(R.layout.activity_main);
+Toolbar toolbar = findViewById(R.id.toolbar);
+setSupportActionBar(toolbar);
+}
+@Override
+public boolean onCreateOptionsMenu(Menu menu) {
+MenuInflater inflater = getMenuInflater();
+inflater.inflate(R.menu.main_menu, menu);
+return true;
+}
+@Override
+public boolean onOptionsItemSelected(MenuItem item) {
+// Handle item selection
+switch (item.getItemId()) {
+case R.id.action_devicecare:
+showToast("Device care selected");
+return true;
+case R.id.action_themes:
+showToast("Themes selected");
+return true;
+case R.id.action_settings:
+showToast("Settings selected");
+return true;
+default:
+return super.onOptionsItemSelected(item);
+}
+}
+private void showToast(String message) {
+Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+}
+}
